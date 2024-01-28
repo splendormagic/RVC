@@ -38,21 +38,23 @@ class VC:
 
         to_return_protect0 = {
             "visible": self.if_f0 != 0,
-            "value": to_return_protect[0]
-            if self.if_f0 != 0 and to_return_protect
-            else 0.5,
+            "value": (
+                to_return_protect[0] if self.if_f0 != 0 and to_return_protect else 0.5
+            ),
             "__type__": "update",
         }
         to_return_protect1 = {
             "visible": self.if_f0 != 0,
-            "value": to_return_protect[1]
-            if self.if_f0 != 0 and to_return_protect
-            else 0.33,
+            "value": (
+                to_return_protect[1] if self.if_f0 != 0 and to_return_protect else 0.33
+            ),
             "__type__": "update",
         }
 
         if not sid:
-            if self.hubert_model is not None:  # 考虑到轮询, 需要加个判断看是否 sid 是由有模型切换到无模型的
+            if (
+                self.hubert_model is not None
+            ):  # 考虑到轮询, 需要加个判断看是否 sid 是由有模型切换到无模型的
                 logger.info("Clean model cache")
                 del (
                     self.net_g,
@@ -61,9 +63,9 @@ class VC:
                     self.hubert_model,
                     self.tgt_sr,
                 )  # ,cpt
-                self.hubert_model = (
-                    self.net_g
-                ) = self.n_spk = self.vc = self.hubert_model = self.tgt_sr = None
+                self.hubert_model = self.net_g = self.n_spk = self.vc = (
+                    self.hubert_model
+                ) = self.tgt_sr = None
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
                 ###楼下不这么折腾清理不干净
@@ -286,14 +288,13 @@ class VC:
                                 tgt_sr,
                             )
                         else:
-                            path = "%s/%s.%s" % (opt_root, os.path.basename(path), format1)
+                            path = "%s/%s.%s" % (
+                                opt_root,
+                                os.path.basename(path),
+                                format1,
+                            )
                             with BytesIO() as wavf:
-                                sf.write(
-                                    wavf,
-                                    audio_opt,
-                                    tgt_sr,
-                                    format="wav"
-                                )
+                                sf.write(wavf, audio_opt, tgt_sr, format="wav")
                                 wavf.seek(0, 0)
                                 with open(path, "wb") as outf:
                                     wav2(wavf, outf, format1)
